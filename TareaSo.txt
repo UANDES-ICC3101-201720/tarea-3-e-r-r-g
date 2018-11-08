@@ -1,0 +1,27 @@
+
+1. Tipos de host que interactuan en el protocolo:
+
+
+1) Cliente: El cliente se comunicara con el servidor para conseguir el tracker que contiene la ip address del computador y un numero de port active para la descarga del  archivo buscado.
+
+2) Servidor: Este estara a cargo de almacenar todos los trackers mandados por los clientes que buscan subir archivos.
+
+
+3) Cliente Seeder: Este cliente se comunica primero con el servidor mandando un tracker que contiene el nombre del archive con su ip address y el port disponible para descargarlo.
+
+2. Interacciones possible en el protocol:
+
+Para el protocolo que buscamos construir definimos 2 tipos de interacion. 
+La relacion entre el primer servidor y el segundo es de cliente servidor mientras que entre el primero y el tercero es de peer to peer. Ademas la informacion mandado entre los varios host sera con formato TCP para tener una mayor confiabilidad en nuestro protocolo.
+Gracias a este formato peer to peer le dara gran escabilidad a nuestro protocolo.
+
+3. Tipos y formato des detallados de mensaje  intercambiados en las interacciones entre los hosts:
+
+
+
+
+
+                                                                                 Tarea 3                                                          Enrique Riveros    
+		Raimundo Gonzalez
+
+
