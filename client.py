@@ -1,14 +1,17 @@
 import socket
 import os
 def Main():
-    host = socket.gethostname()
-    port = 5000
-
+    file = open("Configuracion.txt", 'r')
+    line = file.read().split(",")
+    file.close()
+    host = line[0]
+    print(host)
+    port = int(line[1])
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     s.connect((host, port))
     while True:
-        opcion = input("\t1. Search file\n\t2. Upload file\n\t3. Download file")
+        opcion = input("\t1. Search file\n\t2. Upload file\n\t3. Download file \n\t0. Salir")
         while opcion not in ['0', '1', '2', '3']:
             opcion = input("\t1. Search file\n\t2. Upload file\n\t3. Download file")
         if opcion == '3':

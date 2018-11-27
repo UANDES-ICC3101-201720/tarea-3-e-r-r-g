@@ -1,7 +1,7 @@
 import socket
 import threading
 import os
-def Handler(name, sock):
+def Handler(name, sock,line):
     opcion = sock.recv(1024)[1:]
     print(opcion)
     if opcion==b'1':
@@ -10,12 +10,17 @@ def Handler(name, sock):
         CreateFile(name,sock)
     if opcion==b'3':
         RetrFile(name,sock)
-def RetrFile(name, sock):
+def RetrFile(name, sock,line):
     sock.send(b"ingrese el nombre del archivo")
     filename = sock.recv(1024).decode('utf-8')
     print(filename)
-
-    if os.path.isfile((filename)):
+    path = line[2]
+    paso=False
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(filename):
+                paso=True
+    if paso:
         sock.send(bytes("EXIST" + str(os.path.getsize(filename)),'utf-8'))
         userResponse = sock.recv(1024)
         if userResponse==b'OK':
@@ -31,12 +36,17 @@ def RetrFile(name, sock):
 
     sock.close()
 
-def CreateFile(name, sock):
+def CreateFile(name, sock,line):
     filename = sock.recv(1024).decode("utf-8")
-    if os.path.isfile(filename):
+    path = line[2]
+    paso = False
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(filename):
+                paso = True
+    if paso:
         sock.send(bytes("Ya existe un archivo con este nombre","utf-8"))
     else:
-        print(1)
         sock.send(b"ok")
         f = open('new_' + filename, 'wb')
         filesize = int(sock.recv(1024).decode("utf-8"))
@@ -55,13 +65,25 @@ def CreateFile(name, sock):
         f.close()
 
 
-def SearchFile(name, sock):
-    filename = sock.recv(1024)
-    print(filename[1:])
+def SearchFile(name, sock, line):
+    filename = sock.recv(1024).decode("utf-8")
+    path = line[2]
+    paso = False
+    coso=""
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(filename):
+
+                coso+="- "+ str(os.path.join(file))
+                sock.send(bytes(paso),"utf-8")
 
 def Main():
-    host = socket.gethostname()
-    port = 5000
+    file=open("Configuracion.txt",'r')
+    line=file.read().split(",")
+    file.close()
+    host = line[0]
+    print(host)
+    port = int(line[1])
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host,port))
@@ -72,7 +94,7 @@ def Main():
     while True:
         c, addr = s.accept()
         print("client connected ip: "+str(addr))
-        t= threading.Thread(target=Handler, args=(addr,c))
+        t= threading.Thread(target=Handler, args=(addr,c,line))
         t.start()
 if __name__=="__main__":
     Main()
